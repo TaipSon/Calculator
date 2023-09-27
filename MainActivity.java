@@ -1,0 +1,229 @@
+package com.taipsonco.calculator;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    MediaPlayer mediaPlayer;
+    String operator = "";
+    String oldNumber;
+    Boolean isNew=true;
+    EditText editText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // mediaPlayer = MediaPlayer.create(this, R.raw.wet_click);
+
+        editText = findViewById(R.id.editText);
+    }
+
+    public void clickNumber(View view) {
+
+        if(isNew)
+            editText.setText("");
+        isNew=false;
+        String number = editText.getText().toString();
+        if (view.getId() == R.id.bu1) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "1";
+        } else if (view.getId() == R.id.bu2) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "2";
+        } else if (view.getId() == R.id.bu3) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "3";
+        } else if (view.getId() == R.id.bu4) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "4";
+        } else if (view.getId() == R.id.bu5) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "5";
+        } else if (view.getId() == R.id.bu6) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "6";
+        } else if (view.getId() == R.id.bu7) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "7";
+        } else if (view.getId() == R.id.bu8) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "8";
+        } else if (view.getId() == R.id.bu9) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = number.substring(1);
+            }
+            number = number + "9";
+        } else if (view.getId() == R.id.bu0) {
+            if (zeroIsFirst(number) && number.length() == 1){
+                number = "0";
+            }else {
+            number = number + "0";
+            }
+        } else if (view.getId() == R.id.buDot) {
+            if (dotIsPresent(number)) {
+
+            } else
+            if (zeroIsFirst(number)) {
+                number = "0.";
+            }
+             else {
+                number = number+".";
+            }
+        }
+        else if (view.getId() == R.id.buPlusMinus)
+            if (numberIsZero(number)){
+                number = "0";
+            }else {
+
+                if (minusIsPresent(number)) {
+                    number = number.substring(1);
+                } else {
+                    number = "-" + number;
+                }
+            }
+        editText.setText(number);
+
+    }
+    
+    private boolean zeroIsFirst (String number) {
+        if (number.equals("")) {
+            return true;
+        }
+        if (number.charAt(0) == '0') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private boolean numberIsZero(String number) {
+        if(number.equals("0")  number.equals("")){
+            return true;
+        }else {
+        return false;
+        }
+    }
+
+    public boolean minusIsPresent(String number) {
+        if(number.charAt(0) == '-'){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void operation(View view) {
+        isNew=true;
+        oldNumber=editText.getText().toString();
+        if (view.getId() == R.id.buMinus) {
+        operator="-";
+        } else if (view.getId() == R.id.buPlus) {
+            operator="+";
+        } else if (view.getId() == R.id.buDivide) {
+            operator="/";
+        } else if (view.getId() == R.id.buMultiply) {
+            operator="*";
+        }
+
+    }
+
+    public void clickEqual(View view) {
+        String newNumber = editText.getText().toString();
+        Double result = 0.0;
+
+        if( Double.parseDouble(newNumber) <0.000001 && operator =="/"
+                 newNumber.equals("") && operator == "/") {
+            Toast.makeText(MainActivity.this, R.string.toast_message, Toast.LENGTH_SHORT).show();
+        } else {
+
+
+            switch (operator) {
+                case "-":
+                    result = Double.parseDouble(oldNumber) - Double.parseDouble(newNumber);
+                    break;
+                case "+":
+                    result = Double.parseDouble(oldNumber) + Double.parseDouble(newNumber);
+                    break;
+                case "*":
+                    result = Double.parseDouble(oldNumber) * Double.parseDouble(newNumber);
+                    break;
+                case "/":
+                    result = Double.parseDouble(oldNumber) / Double.parseDouble(newNumber);
+                    break;
+            }
+            editText.setText(result + "");
+        }
+    }
+
+    public void acClick(View view) {
+        editText.setText("0");
+        isNew = true;
+    }
+
+    public boolean dotIsPresent(String number){
+        if (number.indexOf(".") == -1){
+            return false;
+        } else{
+            return true;
+        }
+    }
+
+    public void clickPercent(View view) {
+
+        if (operator == "") {
+            String number = editText.getText().toString();
+            double temp = Double.parseDouble(number)/100;
+            number = temp +"";
+            editText.setText(number);
+        } else {
+            Double result = 0.0;
+            String newNumber = editText.getText().toString();
+            switch (operator) {
+                case "-":
+                    result = Double.parseDouble(oldNumber) - Double.parseDouble(oldNumber) * Double.parseDouble(newNumber)/100;
+                    break;
+                case "+":
+                    result = Double.parseDouble(oldNumber) + Double.parseDouble(oldNumber) * Double.parseDouble(newNumber)/100;
+                    break;
+                case "*":
+                    result = Double.parseDouble(oldNumber) * Double.parseDouble(newNumber)/100;
+                    break;
+                case "/":
+                    result = Double.parseDouble(oldNumber) / Double.parseDouble(newNumber)*100;
+                    break;
+            }
+            editText.setText(result+"");
+            operator = "";
+        }
+    }
+    public void startNewActivity(View v){
+        Intent intent = new Intent(this, SecondActivity2.class);
+        startActivity(intent);
+    }
+}
